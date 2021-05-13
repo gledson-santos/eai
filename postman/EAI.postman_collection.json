@@ -1,0 +1,144 @@
+{
+	"info": {
+		"_postman_id": "aa6e61e2-9a32-4db2-b8ab-3e0ef5d70306",
+		"name": "EAI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get User by Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validando o Status Code 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validando o Nome Naik\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    for (var i in jsonData['data']){\r",
+							"        pm.expect(jsonData['data'][i]['name']).to.include(\"Naik\")\r",
+							"    }    \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://gorest.co.in/public-api/users?name=Naik",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public-api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Naik"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validando o Status Code 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validando objeto usuario\", () => {\r",
+							"    const schema = {\r",
+							"        \"id\": { \"type\": \"number\" },\r",
+							"        \"user_id\": { \"type\": \"number\" },\r",
+							"        \"title\": { \"type\": \"string\" },\r",
+							"        \"body\": { \"type\": \"string\" },\r",
+							"        \"created_at\": { \"type\": \"string\" },\r",
+							"        \"updated_at\": { \"type\": \"string\" }\r",
+							"    };\r",
+							"    \r",
+							"    var retorno = pm.response.json()['data'];\r",
+							"    for(var i in retorno){\r",
+							"        console.log(retorno[i]);\r",
+							"        pm.expect(retorno[i]).to.have.jsonSchema(schema);\r",
+							"    };\r",
+							"    \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest(\"https://gorest.co.in/public-api/users\", function (err, response) {\r",
+							"    var id = response.json()['data'][0]['id'];\r",
+							"    postman.setEnvironmentVariable(\"IdUser\", id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://gorest.co.in/public-api/users/{{IdUser}}/posts",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public-api",
+						"users",
+						"{{IdUser}}",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
